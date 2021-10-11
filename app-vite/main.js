@@ -42,9 +42,10 @@ heart.rotation.z += Math.PI;
 
 scene.add( heart );
 
-const plane_geometry = new THREE.PlaneGeometry( 1, 1 );
-const plane_material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+const plane_geometry = new THREE.PlaneGeometry( 5, 5 );
+const plane_material = new THREE.MeshBasicMaterial( {color: 0x00ff00, transparent: true, opacity: 0.7, side: THREE.DoubleSide} );
 const plane = new THREE.Mesh( plane_geometry, plane_material );
+plane.rotation.x -= Math.PI/4;
 scene.add( plane );
 
 const animate = function () {
