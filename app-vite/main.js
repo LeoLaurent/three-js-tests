@@ -12,10 +12,21 @@ camera.position.set(0, 0, 5);
 camera.lookAt( 0, 0, 0 );
 
 
+// WINDOW RESIZE
+
+const onWindowResize = function () {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+};
+
+
 // RENDERER
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
+window.addEventListener( 'resize', onWindowResize );
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild( renderer.domElement );
