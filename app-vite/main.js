@@ -1,6 +1,7 @@
 import './style.css';
 
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 
 // SCENE and CAMERA
@@ -74,6 +75,12 @@ plane.receiveShadow = true;
 plane.rotation.x -= Math.PI/2;
 plane.translateZ(-1);
 scene.add( plane );
+
+// Controls
+
+const controls = new OrbitControls( camera, renderer.domElement );
+controls.target.set( 0, 1, 0 );
+controls.update();
 
 
 // ANIMATION
