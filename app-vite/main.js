@@ -34,7 +34,7 @@ document.body.appendChild( renderer.domElement );
 
 // LIGHTS
 
-const light = new THREE.DirectionalLight(0xffffff, 1);
+const light = new THREE.DirectionalLight(0xffff00, 1);
 light.position.set(0, 2, 1);
 light.castShadow = true;
 scene.add(light);
@@ -47,15 +47,32 @@ light.shadow.camera.far = 500;
 
 // OBJECTS
 
+const delta_texture_bg = new THREE.TextureLoader().load( 'textures/deltarune_bg.jpg' );
+delta_texture_bg.wrapS = THREE.RepeatWrapping;
+delta_texture_bg.wrapT = THREE.RepeatWrapping;
+delta_texture_bg.repeat.set( 4, 4 );
+const delta_material_bg = new THREE.MeshBasicMaterial( { map: delta_texture_bg, transparent: true, opacity: 0.3 } );
+
+const delta_texture_cube = new THREE.TextureLoader().load( 'textures/deltarune_cube.jpg' );
+delta_texture_cube.wrapS = THREE.RepeatWrapping;
+delta_texture_cube.wrapT = THREE.RepeatWrapping;
+delta_texture_cube.repeat.set( 0.5, 0.5 );
+const delta_material_cube = new THREE.MeshBasicMaterial( { map: delta_texture_cube, transparent: true, opacity: 0.3 } );
+
+// Cubes
+
 const cube_geometry = new THREE.BoxGeometry();
-const cube_material = new THREE.MeshBasicMaterial( { color: 0xcc00aa, transparent: true, opacity: 0.3,  } );
-const cube = new THREE.Mesh( cube_geometry, cube_material );
-scene.add( cube );
 
-const cube2 = new THREE.Mesh( cube_geometry, cube_material );
+const cube = new THREE.Mesh( cube_geometry, delta_material_cube );
+cube.castShadow = true;
+
+const cube2 = new THREE.Mesh( cube_geometry, delta_material_cube );
 cube2.scale.set(0.95,0.95,0.95);
-scene.add( cube2 );
+cube2.castShadow = true;
 
+scene.add( cube, cube2 );
+
+// Heart
 const x = 0, y = 0;
 
 const heartShape = new THREE.Shape();
@@ -74,20 +91,27 @@ const heart = new THREE.Mesh( heart_geometry, heart_material );
 heart.scale.set(0.035,0.035,0.035);
 heart.geometry.center();
 heart.position.set(0,0,0);
-cube2.castShadow = true;
 heart.rotation.z += Math.PI;
 
 scene.add( heart );
 
-const plane_geometry = new THREE.PlaneGeometry( 5, 5 );
-const plane_material = new THREE.ShadowMaterial( {color: 0x00aa00, side: THREE.DoubleSide, transparent: true, opacity: 0.5} );
-const plane = new THREE.Mesh( plane_geometry, plane_material );
-plane.receiveShadow = true;
-plane.rotation.x -= Math.PI/2;
-plane.translateZ(-1);
-scene.add( plane );
+// Planes
+const plane_geometry = new THREE.PlaneGeometry( 10, 10 );
 
-// Controls
+const plane = new THREE.Mesh( plane_geometry, delta_material_bg );
+plane.position.set(0, -1, 0);
+plane.rotation.x -= Math.PI/2;
+
+const shadow_material = new THREE.ShadowMaterial( { color: 0xcc00aa, side: THREE.DoubleSide, transparent: true, opacity: 0.2} );
+const plane_shadow = new THREE.Mesh( plane_geometry, shadow_material );
+plane_shadow.receiveShadow = true;
+plane_shadow.position.set(0, -1, 0);
+plane_shadow.rotation.x -= Math.PI/2;
+
+scene.add( plane, plane_shadow );
+
+
+// CONTROLS
 
 const controls = new OrbitControls( camera, renderer.domElement );
 controls.target.set( 0, 1, 0 );
