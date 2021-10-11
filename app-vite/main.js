@@ -1,20 +1,45 @@
-import './style.css'
+import './style.css';
 
 import * as THREE from 'three';
 
+
+// SCENE and CAMERA
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-camera.position.set(0, 0, 3);
+camera.position.set(0, 0, 5);
 camera.lookAt( 0, 0, 0 );
+
+
+// RENDERER
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild( renderer.domElement );
 
+
+// LIGHTS
+
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(0, 2, 1);
+light.castShadow = true;
+scene.add(light);
+
+light.shadow.mapSize.width = 512;
+light.shadow.mapSize.height = 512;
+light.shadow.camera.near = 0.5;
+light.shadow.camera.far = 500;
+
+
+// OBJECTS
+
 const cube_geometry = new THREE.BoxGeometry();
-const cube_material = new THREE.MeshPhongMaterial( { color: 0xcc00aa, transparent: true, opacity: 0.5,  } );
+const cube_material = new THREE.MeshBasicMaterial( { color: 0xcc00aa, transparent: true, opacity: 0.3,  } );
 const cube = new THREE.Mesh( cube_geometry, cube_material );
 scene.add( cube );
+
 const cube2 = new THREE.Mesh( cube_geometry, cube_material );
 cube2.scale.set(0.95,0.95,0.95);
 scene.add( cube2 );
@@ -31,28 +56,27 @@ heartShape.bezierCurveTo( x + 16, y + 7, x + 16, y, x + 10, y );
 heartShape.bezierCurveTo( x + 7, y, x + 5, y + 5, x + 5, y + 5 );
 
 const heart_geometry = new THREE.ShapeGeometry( heartShape );
-const heart_material = new THREE.MeshPhongMaterial( { color: 0xff0000 } );
+const heart_material = new THREE.MeshPhongMaterial( { color: 0xff0000, side: THREE.DoubleSide } );
 const heart = new THREE.Mesh( heart_geometry, heart_material );
 
 heart.scale.set(0.035,0.035,0.035);
 heart.geometry.center();
-heart.translateY(-0.08)
-heart.material.side = THREE.DoubleSide;
+heart.position.set(0,0,0);
+cube2.castShadow = true;
 heart.rotation.z += Math.PI;
 
 scene.add( heart );
 
 const plane_geometry = new THREE.PlaneGeometry( 5, 5 );
-const plane_material = new THREE.MeshPhongMaterial( {color: 0x00aa00, side: THREE.DoubleSide} );
+const plane_material = new THREE.ShadowMaterial( {color: 0x00aa00, side: THREE.DoubleSide, transparent: true, opacity: 0.5} );
 const plane = new THREE.Mesh( plane_geometry, plane_material );
-plane.rotation.x -= Math.PI/4;
+plane.receiveShadow = true;
+plane.rotation.x -= Math.PI/2;
 plane.translateZ(-1);
 scene.add( plane );
 
-const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(0, 0, 1);
-scene.add(light);
 
+// ANIMATION
 
 const animate = function () {
     requestAnimationFrame( animate );
