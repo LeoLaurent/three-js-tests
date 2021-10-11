@@ -12,7 +12,7 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
 const cube_geometry = new THREE.BoxGeometry();
-const cube_material = new THREE.MeshBasicMaterial( { color: 0xcc00aa, transparent: true, opacity: 0.5,  } );
+const cube_material = new THREE.MeshPhongMaterial( { color: 0xcc00aa, transparent: true, opacity: 0.5,  } );
 const cube = new THREE.Mesh( cube_geometry, cube_material );
 scene.add( cube );
 const cube2 = new THREE.Mesh( cube_geometry, cube_material );
@@ -31,7 +31,7 @@ heartShape.bezierCurveTo( x + 16, y + 7, x + 16, y, x + 10, y );
 heartShape.bezierCurveTo( x + 7, y, x + 5, y + 5, x + 5, y + 5 );
 
 const heart_geometry = new THREE.ShapeGeometry( heartShape );
-const heart_material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+const heart_material = new THREE.MeshPhongMaterial( { color: 0xff0000 } );
 const heart = new THREE.Mesh( heart_geometry, heart_material );
 
 heart.scale.set(0.035,0.035,0.035);
@@ -43,10 +43,16 @@ heart.rotation.z += Math.PI;
 scene.add( heart );
 
 const plane_geometry = new THREE.PlaneGeometry( 5, 5 );
-const plane_material = new THREE.MeshBasicMaterial( {color: 0x00ff00, transparent: true, opacity: 0.7, side: THREE.DoubleSide} );
+const plane_material = new THREE.MeshPhongMaterial( {color: 0x00aa00, side: THREE.DoubleSide} );
 const plane = new THREE.Mesh( plane_geometry, plane_material );
 plane.rotation.x -= Math.PI/4;
+plane.translateZ(-1);
 scene.add( plane );
+
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(0, 0, 1);
+scene.add(light);
+
 
 const animate = function () {
     requestAnimationFrame( animate );
