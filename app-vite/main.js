@@ -34,7 +34,7 @@ document.body.appendChild( renderer.domElement );
 
 // LIGHTS
 
-const light = new THREE.DirectionalLight(0xffff00, 1);
+const light = new THREE.DirectionalLight(0xffffff, 1);
 light.position.set(0, 2, 1);
 light.castShadow = true;
 scene.add(light);
@@ -51,7 +51,7 @@ const delta_texture_bg = new THREE.TextureLoader().load( 'textures/deltarune_bg.
 delta_texture_bg.wrapS = THREE.RepeatWrapping;
 delta_texture_bg.wrapT = THREE.RepeatWrapping;
 delta_texture_bg.repeat.set( 4, 4 );
-const delta_material_bg = new THREE.MeshBasicMaterial( { map: delta_texture_bg, transparent: true, opacity: 0.3 } );
+const delta_material_bg = new THREE.MeshPhongMaterial( { map: delta_texture_bg, transparent: true, opacity: 0.3 } );
 
 const delta_texture_cube = new THREE.TextureLoader().load( 'textures/deltarune_cube.jpg' );
 delta_texture_cube.wrapS = THREE.RepeatWrapping;
@@ -111,10 +111,13 @@ for (let i = 0; i < plane_array.length; i += 3)
 }
 
 const plane = new THREE.Mesh( plane_geometry, delta_material_bg );
+plane.material.flatShading = THREE.FlatShading;
+//plane.castShadow = true;
+//plane.receiveShadow = true;
 plane.position.set(0, -1, 0);
 plane.rotation.x -= Math.PI/2;
 
-const shadow_material = new THREE.ShadowMaterial( { color: 0xcc00aa, side: THREE.DoubleSide, transparent: true, opacity: 0.2} );
+const shadow_material = new THREE.ShadowMaterial( { color: 0x003300, side: THREE.DoubleSide, transparent: true, opacity: 0.1} );
 const plane_shadow = new THREE.Mesh( plane_geometry, shadow_material );
 plane_shadow.receiveShadow = true;
 plane_shadow.position.set(0, -1, 0);
