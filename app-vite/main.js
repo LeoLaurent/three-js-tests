@@ -73,6 +73,7 @@ cube2.castShadow = true;
 scene.add( cube, cube2 );
 
 // Heart
+
 const x = 0, y = 0;
 
 const heartShape = new THREE.Shape();
@@ -96,7 +97,18 @@ heart.rotation.z += Math.PI;
 scene.add( heart );
 
 // Planes
-const plane_geometry = new THREE.PlaneGeometry( 10, 10 );
+
+const plane_geometry = new THREE.PlaneGeometry( 10, 10, 20, 20 );
+const { array: plane_array } = plane_geometry.attributes.position;
+//console.log(plane_array);
+for (let i = 0; i < plane_array.length; i += 3)
+    {
+    const x = plane_array[i];
+    const y = plane_array[i + 1];
+    const z = plane_array[i + 2];
+
+    plane_array[i + 2] = z - Math.random()*0.5 ;
+}
 
 const plane = new THREE.Mesh( plane_geometry, delta_material_bg );
 plane.position.set(0, -1, 0);
