@@ -99,41 +99,68 @@ scene.add( heart );
 // Planes
 
 const plane_geometry = new THREE.PlaneGeometry( 10, 10, 20, 20 );
-const { array: plane_array } = plane_geometry.attributes.position;
+//const { array: plane_array } = plane_geometry.attributes.position;
 //console.log(plane_array);
-for (let i = 0; i < plane_array.length; i += 3)
-    {
-    const x = plane_array[i];
-    const y = plane_array[i + 1];
-    const z = plane_array[i + 2];
 
-    plane_array[i + 2] = z - Math.random()*0.5 ;
-}
+const init_plane_geometry = function () {
+    let { array } = plane_geometry.attributes.position;
+    for (let i = 0; i < array.length; i += 3)
+        {
+        let x = array[i];
+        let y = array[i + 1];
+        let z = array[i + 2];
+
+        array[i + 2] = z - Math.random()*0.5 ;
+    }
+};
+init_plane_geometry();
 
 const plane = new THREE.Mesh( plane_geometry, delta_material_bg );
 plane.material.flatShading = THREE.FlatShading;
 //plane.castShadow = true;
 //plane.receiveShadow = true;
-plane.position.set(0, -1, 0);
+plane.position.set(-5, -2, 0);
 plane.rotation.x -= Math.PI/2;
 
 const shadow_material = new THREE.ShadowMaterial( { color: 0x003300, side: THREE.DoubleSide, transparent: true, opacity: 0.1} );
 const plane_shadow = new THREE.Mesh( plane_geometry, shadow_material );
 plane_shadow.receiveShadow = true;
-plane_shadow.position.set(0, -1, 0);
+plane_shadow.position.set(-5, -2, 0);
 plane_shadow.rotation.x -= Math.PI/2;
 
 scene.add( plane, plane_shadow );
 
+const plane2 = plane.clone();
+plane2.scale.x = -1;
+plane2.position.x += 10;
+
+const plane_shadow2 = plane_shadow.clone();
+plane_shadow2.scale.x = -1;
+plane_shadow2.position.x += 10;
+
+scene.add( plane2, plane_shadow2 );
 
 // CONTROLS
 
 const controls = new OrbitControls( camera, renderer.domElement );
-controls.target.set( 0, 1, 0 );
+controls.target.set( 0, 0, 0 );
 controls.update();
 
 
 // ANIMATION
+
+console.log(plane.geometry.attributes.position.array);
+
+const new_plane_x = function (x) {
+    let new_x = 0.;
+    if (x > 10) {
+        new_x = -10;
+    }
+    else {
+        new_x = x + 0.005;
+    }
+    return new_x;
+};
 
 const animate = function () {
     requestAnimationFrame( animate );
@@ -144,6 +171,11 @@ const animate = function () {
     cube2.rotation.y -= 0.01;
 
     heart.rotation.y += 0.005;
+
+    plane.position.x = new_plane_x( plane.position.x ) ;
+    plane2.position.x = new_plane_x( plane2.position.x ) ;
+    plane_shadow.position.x = new_plane_x( plane_shadow.position.x ) ;
+    plane_shadow2.position.x = new_plane_x( plane_shadow2.position.x ) ;
 
     renderer.render( scene, camera );
 };
