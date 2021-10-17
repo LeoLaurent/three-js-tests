@@ -29,6 +29,7 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 window.addEventListener( 'resize', onWindowResize );
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.localClippingEnabled = true;
 document.body.appendChild( renderer.domElement );
 
 
@@ -96,11 +97,18 @@ heart.rotation.z += Math.PI;
 
 scene.add( heart );
 
+
+// Clipping Planes
+
+const clip_plane_left = new THREE.Plane( new THREE.Vector3( 1, 0, 0 ), 5 );
+const clip_plane_right = new THREE.Plane( new THREE.Vector3( -1, 0, 0 ), 5 );
+const clip_plane_fwd = new THREE.Plane( new THREE.Vector3( 0, 0, 1 ), 5 );
+const clip_plane_bwd = new THREE.Plane( new THREE.Vector3( 0, 0, -1 ), 5 );
+
+
 // Planes
 
 const plane_geometry = new THREE.PlaneGeometry( 10, 10, 20, 20 );
-//const { array: plane_array } = plane_geometry.attributes.position;
-//console.log(plane_array);
 
 const init_plane_geometry = function () {
     let { array } = plane_geometry.attributes.position;
@@ -117,6 +125,8 @@ init_plane_geometry();
 
 const plane = new THREE.Mesh( plane_geometry, delta_material_bg );
 plane.material.flatShading = THREE.FlatShading;
+plane.material.clippingPlanes = [ clip_plane_left, clip_plane_right, clip_plane_bwd, clip_plane_fwd ];
+plane.material.clipShadows = true;
 //plane.castShadow = true;
 //plane.receiveShadow = true;
 plane.position.set(-5, -2, 0);
@@ -140,6 +150,28 @@ plane_shadow2.position.x += 10;
 
 scene.add( plane2, plane_shadow2 );
 
+const plane3 = plane.clone();
+plane3.scale.y = -1;
+plane3.position.z += 10;
+
+const plane_shadow3 = plane_shadow.clone();
+plane_shadow3.scale.y = -1;
+plane_shadow3.position.z += 10;
+
+scene.add( plane3, plane_shadow3 );
+
+const plane4 = plane3.clone();
+plane4.scale.x = -1;
+plane4.position.x += 10;
+
+const plane_shadow4 = plane_shadow3.clone();
+plane_shadow4.scale.x = -1;
+plane_shadow4.position.x += 10;
+
+scene.add( plane4, plane_shadow4 );
+
+
+
 // CONTROLS
 
 const controls = new OrbitControls( camera, renderer.domElement );
@@ -162,6 +194,18 @@ const new_plane_x = function (x) {
     return new_x;
 };
 
+const new_plane_z = function (z) {
+    let new_z = 0.;
+    if (z < -10) {
+        new_z = 10;
+    }
+    else {
+        new_z = z - 0.005;
+    }
+    return new_z;
+};
+
+
 const animate = function () {
     requestAnimationFrame( animate );
 
@@ -174,8 +218,21 @@ const animate = function () {
 
     plane.position.x = new_plane_x( plane.position.x ) ;
     plane2.position.x = new_plane_x( plane2.position.x ) ;
+    plane3.position.x = new_plane_x( plane3.position.x ) ;
+    plane4.position.x = new_plane_x( plane4.position.x ) ;
     plane_shadow.position.x = new_plane_x( plane_shadow.position.x ) ;
     plane_shadow2.position.x = new_plane_x( plane_shadow2.position.x ) ;
+    plane_shadow3.position.x = new_plane_x( plane_shadow3.position.x ) ;
+    plane_shadow4.position.x = new_plane_x( plane_shadow4.position.x ) ;
+
+    plane.position.z = new_plane_z( plane.position.z ) ;
+    plane2.position.z = new_plane_z( plane2.position.z ) ;
+    plane3.position.z = new_plane_z( plane3.position.z ) ;
+    plane4.position.z = new_plane_z( plane4.position.z ) ;
+    plane_shadow.position.z = new_plane_z( plane_shadow.position.z ) ;
+    plane_shadow2.position.z = new_plane_z( plane_shadow2.position.z ) ;
+    plane_shadow3.position.z = new_plane_z( plane_shadow3.position.z ) ;
+    plane_shadow4.position.z = new_plane_z( plane_shadow4.position.z ) ;
 
     renderer.render( scene, camera );
 };
